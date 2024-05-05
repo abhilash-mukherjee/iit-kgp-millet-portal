@@ -24,6 +24,9 @@ export default function PreResultCard() {
                 <PenaltySliders />
                 <InstructionsList />
                 <Button colorScheme="teal" onClick={handleResults}>{isLoading ? "Loading..." : "Get Results"}</Button>
+                <a href="https://drive.google.com/drive/folders/1x_iK6lDfgJTozn9DA8ZYPsA7OEDqJeVJ?usp=drive_link" target="_blank" rel="noopener noreferrer">
+                    Sample Images
+                </a>
             </Card>
         </>
     )
