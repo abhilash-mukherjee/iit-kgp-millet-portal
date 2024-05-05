@@ -1,16 +1,17 @@
 "use strict";
-
-import { useState, ChangeEvent } from 'react';
+import { ChangeEvent } from 'react';
+import { useRecoilState } from 'recoil';
+import { imageAtom } from '@/store/imageAtoms'; // Adjust the path as necessary
 import { Box, Image, SimpleGrid, Button, Text, Input } from '@chakra-ui/react';
 
 const ImageUploader: React.FC = () => {
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useRecoilState(imageAtom);
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
     if (fileList && fileList.length > 0) {
-      // Create a new array from the existing file list and new files, slice it to keep only up to 5 files.
-      setImages(prevImages => [...prevImages, ...Array.from(fileList)].slice(0, 5));
+      const newImages = [...images, ...Array.from(fileList).map(file => URL.createObjectURL(file))].slice(0, 5);
+      setImages(newImages);
     }
   };
 
@@ -18,16 +19,17 @@ const ImageUploader: React.FC = () => {
     if (index < images.length) {
       return (
         <Image
-          src={URL.createObjectURL(images[index])}
+          src={images[index]}
           alt={`Selected image ${index + 1}`}
           objectFit="cover"
+          boxSize="100%"
         />
       );
     } else if (index === images.length && images.length < 5) {
       return (
         <Box border="2px dashed" borderColor="gray.200" display="flex" alignItems="center" justifyContent="center" padding={2} boxSize={'100%'} height={100}>
           <Button as="label" height={90} whiteSpace="normal" overflow="hidden" fontSize={'small'} cursor={'pointer'}>
-            Upload more images <br></br> ({5 - images.length} remaining)
+            Upload more images <br /> ({5 - images.length} remaining)
             <Input type="file" multiple accept="image/*" onChange={handleImageChange} hidden />
           </Button>
         </Box>
